@@ -1,11 +1,12 @@
 <script setup>
   defineProps({
     value: String,
+    visible: Boolean,
   })
 </script>
 
 <template>
-  <span @mouseenter="handleHover" class="letter"  :class="{ bounce: animated }" :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}]">{{ value }}</span>
+  <span @mouseenter="handleHover" class="letter"  :class="{ bounce: animated, fade: visible }" :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}]">{{ value }}</span>
 </template>
 
 <script>
@@ -13,6 +14,7 @@ export default {
   data() {
     return {
       animated: false,
+      fadeIn: false,
     };
   },
 
@@ -23,7 +25,7 @@ export default {
       }
       this.animated = true;
     }
-  }
+  },
 }
 </script>
 
@@ -31,6 +33,8 @@ export default {
 .letter {
   display: inline-block;
   margin-right: 0.15rem;
+  transition: 500ms;
+  opacity: 0.1;
 }
 
 @keyframes rubberBand {
@@ -65,6 +69,10 @@ export default {
 
 .bounce {
   animation: rubberBand 800ms linear;
+}
+
+.fade {
+  opacity: 1;
 }
 
 

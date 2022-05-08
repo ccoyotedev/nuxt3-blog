@@ -24,6 +24,7 @@
     justify-content: flex-end;
     padding-right: calc((100% - 14rem) * 0.083333);
     z-index: 99;
+    backdrop-filter: blur(1px);
   }
 
   .header:after {
