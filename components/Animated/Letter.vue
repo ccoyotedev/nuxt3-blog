@@ -40,7 +40,6 @@ export default {
   watch: {
     visible: {
       handler(isVisible) {
-        console.log("isVisible: ", isVisible)
         if (isVisible) {
           setTimeout(function () {
             this.fadeIn = true;

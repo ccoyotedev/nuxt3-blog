@@ -94,21 +94,36 @@ p {
 .layout {
   width: 100%;
   height: 100vh;
-  display: grid;
-  grid-template-columns: 14rem 1fr;
 }
 
 .content {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-
   background: repeating-linear-gradient(
-    to right,
-    rgba(0,0,0,0),
-    rgba(0,0,0,0) calc(8.333% - 0.5px),
-    rgba(2, 220, 129, 0.1) calc(8.333% - 0.5px),
-    rgba(2, 220, 129, 0.1) 8.333%
-    );
+        to right,
+        rgba(0,0,0,0),
+        rgba(0,0,0,0) calc(25% - 0.5px),
+        rgba(2, 220, 129, 0.1) calc(25% - 0.5px),
+        rgba(2, 220, 129, 0.1) 25%
+        );
+  
 }
+
+@media (min-width: 768px) {
+    .layout {
+      display: grid;
+      grid-template-columns: 14rem 1fr;
+    }
+
+    .content {
+      background: repeating-linear-gradient(
+      to right,
+      rgba(0,0,0,0),
+      rgba(0,0,0,0) calc(8.333% - 0.5px),
+      rgba(2, 220, 129, 0.1) calc(8.333% - 0.5px),
+      rgba(2, 220, 129, 0.1) 8.333%
+      );
+    }
+  }
 </style>

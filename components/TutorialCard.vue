@@ -32,7 +32,7 @@
       border: 1px solid rgba(2, 220, 129, 0.4);
       border-radius: 0.8rem;
       overflow: hidden;
-      background-color: rgba(2, 220, 129, 0.2);
+      background-color: rgba(2, 220, 129, 0.1);
       height: 100%;
       transition: 300ms;
     }

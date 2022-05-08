@@ -15,9 +15,15 @@
 <style scoped>
   .tutorial-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     width: 100%;
     gap: 1.2rem;
     margin-top: 1.2rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .tutorial-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>
