@@ -1,6 +1,18 @@
 <template>
-  <div>
-    <NuxtPage />
+  <div class="layout">
+    <div class="sidetray">
+      <ul>
+        <li>
+          <NuxtLink to="/">Home</NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/about">About</NuxtLink>
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <NuxtPage />
+    </div>
   </div>
 </template>
 
@@ -11,7 +23,7 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   font-size: 10px;
-  color: #000203;
+  color: white;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -73,5 +85,35 @@ p {
   justify-content: center;
   padding: 0 5.2rem;
   min-height: 100vh;
+}
+
+.page-enter-active,
+.page-leave-active {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.layout {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+}
+
+.sidetray {
+  border-right: 1px solid #02dc81;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 </style>

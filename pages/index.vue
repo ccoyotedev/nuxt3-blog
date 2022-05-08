@@ -1,11 +1,5 @@
 <template>
-  <NuxtLayout name="custom">
+  <NuxtLayout name="animation">
     <h1>Home</h1>
   </NuxtLayout>
 </template>
-
-<script setup>
-definePageMeta({
-  title: "Home",
-});
-</script>
