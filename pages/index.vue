@@ -1,5 +1,7 @@
 <template>
   <NuxtLayout name="animation">
-    <AnimatedHeading value="Nice to meet you." />
+    <SectionHero />
+    <SectionAbout />
+    <SectionTutorials />
   </NuxtLayout>
 </template>
