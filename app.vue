@@ -1,19 +1,11 @@
 <template>
-  <div class="layout">
-    <div class="sidetray">
-      <ul>
-        <li>
-          <NuxtLink to="/">Home</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/about">About</NuxtLink>
-        </li>
-      </ul>
+    <div class="layout">
+      <Header />
+      <Sidetray />
+      <div class="content">
+        <NuxtPage />
+      </div>
     </div>
-    <div class="content">
-      <NuxtPage />
-    </div>
-  </div>
 </template>
 
 <style>
@@ -26,7 +18,7 @@ body {
   color: white;
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
   background: radial-gradient(
@@ -105,15 +97,17 @@ p {
   grid-template-columns: 14rem 1fr;
 }
 
-.sidetray {
-  border-right: 1px solid #02dc81;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-}
-
 .content {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+
+  background: repeating-linear-gradient(
+    to right,
+    rgba(0,0,0,0),
+    rgba(0,0,0,0) calc(8.33% - 0.5px),
+    rgba(2, 220, 129, 0.1) calc(8.33% - 0.5px),
+    rgba(2, 220, 129, 0.1) calc(8.33% + 0.5px)
+    );
 }
 </style>

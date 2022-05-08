@@ -6,4 +6,13 @@ export default defineNuxtConfig({
     name: "my-layouts",
     mode: "out-in",
   },
+
+  head: {
+    link: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap",
+      },
+    ],
+  },
 });

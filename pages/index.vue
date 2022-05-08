@@ -1,5 +1,5 @@
 <template>
   <NuxtLayout name="animation">
-    <h1>Home</h1>
+    <AnimatedHeading value="Nice to meet you." />
   </NuxtLayout>
 </template>
