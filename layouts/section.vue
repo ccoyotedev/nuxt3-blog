@@ -8,10 +8,10 @@
 
 <style scoped>
   .section {
-    padding:  5.4rem 8.333%;
+    padding:  10.8rem 8.333%;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
   }
 </style>

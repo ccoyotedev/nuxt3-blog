@@ -2,15 +2,25 @@
   defineProps({
     value: String,
     visible: Boolean,
+    delay: Number,
+    color: String,
   })
 </script>
 
 <template>
-  <span @mouseenter="handleHover" class="letter"  :class="{ bounce: animated, fade: visible }" :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}]">{{ value }}</span>
+  <span
+    @mouseenter="handleHover"
+    class="letter"
+    :class="{ bounce: animated, fade: fadeIn }"
+    :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}, { color: color }]"
+  >
+    {{ value }}
+  </span>
 </template>
 
 <script>
 export default {
+  props: ['delay'],
   data() {
     return {
       animated: false,
@@ -26,6 +36,20 @@ export default {
       this.animated = true;
     }
   },
+
+  watch: {
+    visible: {
+      handler(isVisible) {
+        console.log("isVisible: ", isVisible)
+        if (isVisible) {
+          setTimeout(function () {
+            this.fadeIn = true;
+            this.handleHover();
+          }.bind(this), this.delay)
+        } 
+      }
+    }
+  }
 }
 </script>
 
@@ -34,7 +58,7 @@ export default {
   display: inline-block;
   margin-right: 0.15rem;
   transition: 500ms;
-  opacity: 0.1;
+  opacity: 0;
 }
 
 @keyframes rubberBand {
