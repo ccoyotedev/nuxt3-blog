@@ -1,12 +1,12 @@
-<template>
-  <span @mouseenter="handleHover" class="letter"  :class="{ bounce: animated }" :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}]">{{ value }}</span>
-</template>
-
 <script setup>
   defineProps({
     value: String,
   })
 </script>
+
+<template>
+  <span @mouseenter="handleHover" class="letter"  :class="{ bounce: animated }" :style="[value === ' ' ? { width: '1.2rem' } : { width: 'auto'}]">{{ value }}</span>
+</template>
 
 <script>
 export default {

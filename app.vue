@@ -18,7 +18,7 @@ body {
   color: white;
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
   background: radial-gradient(
@@ -105,9 +105,9 @@ p {
   background: repeating-linear-gradient(
     to right,
     rgba(0,0,0,0),
-    rgba(0,0,0,0) calc(8.33% - 0.5px),
-    rgba(2, 220, 129, 0.1) calc(8.33% - 0.5px),
-    rgba(2, 220, 129, 0.1) calc(8.33% + 0.5px)
+    rgba(0,0,0,0) calc(8.333% - 0.5px),
+    rgba(2, 220, 129, 0.1) calc(8.333% - 0.5px),
+    rgba(2, 220, 129, 0.1) 8.333%
     );
 }
 </style>

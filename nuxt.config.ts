@@ -7,12 +7,17 @@ export default defineNuxtConfig({
     mode: "out-in",
   },
 
-  head: {
-    link: [
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap",
+  buildModules: ["@nuxtjs/google-fonts"],
+
+  googleFonts: {
+    families: {
+      Roboto: true,
+      "Josefin+Sans": true,
+      Lato: [100, 300],
+      Raleway: {
+        wght: [100, 400],
+        ital: [100],
       },
-    ],
+    },
   },
 });

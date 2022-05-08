@@ -7,6 +7,9 @@
       <li>
         <NuxtLink to="/about">About</NuxtLink>
       </li>
+       <li>
+        <NuxtLink to="/tutorials">Tutorials</NuxtLink>
+      </li>
     </ul>
   </div>
 </template>
@@ -62,5 +65,10 @@ li:first-of-type a:before {
 
 li:hover {
   background-color: rgba(2, 220, 129, 0.1);
+}
+
+a.router-link-exact-active {
+  color: rgba(2, 220, 129, 1);
+  text-shadow: 0 0 4px rgba(2, 220, 129, 0.4);
 }
 </style>
