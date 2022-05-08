@@ -13,5 +13,6 @@
 <style scoped>
   h1 {
     font-size: 5.4rem;
+    margin-bottom: 1.2rem;
   }
 </style>

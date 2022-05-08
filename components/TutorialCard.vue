@@ -3,7 +3,7 @@
     url: String,
     coverImage: String,
     title: String,
-    tags: [String],
+    tags: Array,
     likes: Number,
     published: String,
   })
