@@ -1,6 +1,6 @@
-# Nuxt 3 Minimal Starter
+# Nuxt 3 Blog
 
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+[View deployed site here](https://github.com/ccoyotedev/nuxt3-blog)
 
 ## Setup
 
