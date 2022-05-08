@@ -67,9 +67,15 @@ h2,
 h3,
 h4,
 h5,
-h6,
-p {
+h6 {
   margin: 0;
+}
+
+p {
+  font-size: 1.8rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+  opacity: 0.8;
 }
 
 .container {
