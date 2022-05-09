@@ -1,6 +1,6 @@
 # Nuxt 3 Blog
 
-[View deployed site here](https://github.com/ccoyotedev/nuxt3-blog)
+[View deployed site here](https://adorable-lamington-5336fc.netlify.app/)
 
 ## Setup
 
