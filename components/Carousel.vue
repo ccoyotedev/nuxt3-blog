@@ -15,18 +15,6 @@
 	</div>
 </template>
 
-<script>
-  export default {
-    computed: {
-      cssProps() {
-        return {
-          '--keyframe-transform': `translateY(calc(-18rem * ${this.items.length}))`,
-        }
-      }
-    }
-  }
-</script>
-
 <style scoped>
   @keyframes translateinfinite {
     100% { transform: translateY(calc(-18rem * 12))  }
