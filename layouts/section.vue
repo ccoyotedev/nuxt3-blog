@@ -13,6 +13,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
   }
 </style>
   
