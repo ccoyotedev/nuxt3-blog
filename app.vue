@@ -1,17 +1,17 @@
 <template>
-    <div class="layout">
-      <Header />
-      <Sidetray />
-      <div class="content">
-        <NuxtPage />
-      </div>
+  <div class="layout">
+    <Header />
+    <Sidetray />
+    <div class="content">
+      <NuxtPage />
     </div>
+  </div>
 </template>
 
 <style>
 html,
 body {
-  overflow: hidden;
+  overflow-x: hidden;
   max-width: 100vw;
   max-height: 100vh;
   font-size: 10px;
@@ -19,8 +19,8 @@ body {
   padding: 0;
   margin: 0;
   font-weight: 300;
-  font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
   background: radial-gradient(
       ellipse at right bottom,
@@ -107,29 +107,28 @@ p {
   overflow-x: hidden;
   position: relative;
   background: repeating-linear-gradient(
-        to right,
-        rgba(0,0,0,0),
-        rgba(0,0,0,0) calc(25% - 0.5px),
-        rgba(2, 220, 129, 0.1) calc(25% - 0.5px),
-        rgba(2, 220, 129, 0.1) 25%
-        );
-  
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0) calc(25% - 0.5px),
+    rgba(2, 220, 129, 0.1) calc(25% - 0.5px),
+    rgba(2, 220, 129, 0.1) 25%
+  );
 }
 
 @media (min-width: 768px) {
-    .layout {
-      display: grid;
-      grid-template-columns: 14rem 1fr;
-    }
+  .layout {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+  }
 
-    .content {
-      background: repeating-linear-gradient(
+  .content {
+    background: repeating-linear-gradient(
       to right,
-      rgba(0,0,0,0),
-      rgba(0,0,0,0) calc(8.333% - 0.5px),
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0) calc(8.333% - 0.5px),
       rgba(2, 220, 129, 0.1) calc(8.333% - 0.5px),
       rgba(2, 220, 129, 0.1) 8.333%
-      );
-    }
+    );
   }
+}
 </style>
