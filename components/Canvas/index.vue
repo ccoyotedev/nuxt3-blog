@@ -6,20 +6,24 @@
 import {
   drawLine,
   drawCircle,
-  coordinateOfPointAfterRotation,
   calculateDistance,
   calculateXYDisplacement,
+  isOutOfBounds,
 } from "./helpers/index.js";
+import { drawProjectiles, drawShip } from "./helpers/spaceShooter.js";
 
 export default {
   name: "Canvas",
   data() {
     return {
+      active: true,
       mouse: {
         x: 0,
         y: 0,
       },
       ship: {
+        firerate: 400,
+        reloading: false,
         x: 300,
         y: 300,
         height: 40,
@@ -33,8 +37,11 @@ export default {
   },
   mounted() {
     window.addEventListener("mousemove", this.trackMouse);
-    window.addEventListener("click", this.shoot);
+    window.addEventListener("click", this.handleClick);
     window.addEventListener("keypress", this.handleKeyPress);
+    document
+      .getElementsByClassName("content")[0]
+      .addEventListener("scroll", this.handleViewportCheck);
 
     this.init();
     setTimeout(() => {
@@ -43,10 +50,14 @@ export default {
       }
     }, 1000);
   },
-  beforeDestroy() {
+  beforeUnmount() {
+    this.active = false;
     window.removeEventListener("mousemove", this.trackMouse);
-    window.removeEventListener("click", this.shoot);
+    window.removeEventListener("click", this.handleClick);
     window.removeEventListener("keypress", this.handleKeyPress);
+    document
+      .getElementsByClassName("content")[0]
+      .removeEventListener("scroll", this.handleViewportCheck);
   },
   methods: {
     init() {
@@ -67,6 +78,11 @@ export default {
         this.endGame();
       }
     },
+    handleViewportCheck() {
+      const scrolled = document.getElementsByClassName("content")[0].scrollTop;
+      const height = window.innerHeight;
+      this.active = scrolled < height;
+    },
     startGame() {
       this.$emit("start-game");
       const bodyElement = document.querySelector("body");
@@ -86,14 +102,16 @@ export default {
     animate() {
       requestAnimationFrame(this.animate);
 
-      this.setCanvasSize();
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.drawPointer();
-      this.updateShip();
-      this.updateProjectiles();
-      this.clearInactiveProjectiles();
-      this.drawShip();
-      this.drawProjectiles();
+      if (this.active) {
+        this.setCanvasSize();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawPointer();
+        this.updateShip();
+        this.updateProjectiles();
+        this.clearInactiveProjectiles();
+        drawShip(this.ctx, this.ship);
+        drawProjectiles(this.ctx, this.ship.projectiles);
+      }
     },
     trackMouse(e) {
       const rect = this.canvas.getBoundingClientRect();
@@ -125,10 +143,21 @@ export default {
         { x2: x, y2: y + radius / 3 }
       );
     },
+    handleClick() {
+      console.log(this.ship.reloading);
+      if (!this.ship.reloading) {
+        this.shoot();
+        this.ship.reloading = true;
+
+        setTimeout(() => {
+          this.ship.reloading = false;
+        }, this.ship.firerate);
+      }
+    },
     shoot() {
       const x = this.ship.x;
       const y = this.ship.y;
-      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 10);
+      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 8);
       const vx = dx + this.ship.vx;
       const vy = dy + this.ship.vy * 2;
       const projectile = { x, y, vx, vy, active: true };
@@ -141,7 +170,7 @@ export default {
       const projectile = this.ship.projectiles[i];
       const x = projectile.x - projectile.vx;
       const y = projectile.y - projectile.vy;
-      const active = !this.isOutOfBounds(x, y, 5);
+      const active = !isOutOfBounds(this.canvas, x, y, 5);
 
       const updatedProjectile = {
         ...projectile,
@@ -195,50 +224,6 @@ export default {
       else if (y > this.canvas.height + this.ship.height)
         this.ship.y = this.canvas.height + this.ship.height;
       else this.ship.y = y;
-    },
-    drawProjectiles() {
-      this.ship.projectiles.forEach((projectile) => {
-        drawCircle(this.ctx, projectile.x, projectile.y, 5, {
-          fill: "#02dc81",
-        });
-      });
-    },
-    drawShip() {
-      const { x, y, height, width, theta } = this.ship;
-      const x0 = 0;
-      const y0 = 0;
-      const x1 = height;
-      const y1 = -width / 2;
-      const x2 = (2 * height) / 3;
-      const y2 = 0;
-      const x3 = height;
-      const y3 = width / 2;
-
-      const v0 = coordinateOfPointAfterRotation(x0, y0, theta);
-      const v1 = coordinateOfPointAfterRotation(x1, y1, theta);
-      const v2 = coordinateOfPointAfterRotation(x2, y2, theta);
-      const v3 = coordinateOfPointAfterRotation(x3, y3, theta);
-
-      drawLine(
-        this.ctx,
-        { x1: x + v0.x, y1: y + v0.y },
-        { x2: x + v1.x, y2: y + v1.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v1.x, y1: y + v1.y },
-        { x2: x + v2.x, y2: y + v2.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v2.x, y1: y + v2.y },
-        { x2: x + v3.x, y2: y + v3.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v3.x, y1: y + v3.y },
-        { x2: x + v0.x, y2: y + v0.y }
-      );
     },
   },
 };

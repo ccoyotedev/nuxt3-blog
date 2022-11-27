@@ -55,3 +55,14 @@ export function calculateDistance(x1, y1, x2, y2) {
   let dy = Math.abs(y1 - y2);
   return Math.sqrt(dx * dx + dy * dy);
 }
+
+export function isOutOfBounds(canvas, x, y, radius) {
+  if (
+    x > canvas.width + radius ||
+    x < -radius ||
+    y > canvas.height + radius ||
+    y < -radius
+  )
+    return true;
+  return false;
+}
