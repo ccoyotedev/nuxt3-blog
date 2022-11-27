@@ -7,6 +7,8 @@ import {
   drawLine,
   drawCircle,
   coordinateOfPointAfterRotation,
+  calculateDistance,
+  calculateXYDisplacement,
 } from "./helpers/index.js";
 
 export default {
@@ -22,10 +24,17 @@ export default {
         y: 300,
         height: 40,
         width: 30,
+        theta: 0,
+        vx: 0,
+        vy: 0,
       },
     };
   },
   mounted() {
+    window.addEventListener("mousemove", this.trackMouse);
+    window.addEventListener("click", this.shoot);
+    window.addEventListener("keypress", this.handleKeyPress);
+
     this.init();
     setTimeout(() => {
       if (!this.ctx) {
@@ -35,30 +44,49 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("mousemove", this.trackMouse);
+    window.removeEventListener("click", this.shoot);
+    window.removeEventListener("keypress", this.handleKeyPress);
   },
   methods: {
     init() {
       const c = document.getElementById("c");
       if (c) {
-        c.style.width = "100%";
-        c.style.height = "100%";
-        // ...then set the internal size to match
-        c.width = c.offsetWidth;
-        c.height = c.offsetHeight;
-
         const ctx = c.getContext("2d");
-        window.addEventListener("mousemove", this.trackMouse);
         this.canvas = c;
         this.ctx = ctx;
+
+        this.setCanvasSize();
         this.animate();
       }
+    },
+    handleKeyPress(e) {
+      if (e.key === "p") {
+        this.startGame();
+      } else if (e.key === "q") {
+        this.endGame();
+      }
+    },
+    startGame() {
+      this.$emit("start-game");
+      const bodyElement = document.querySelector("body");
+      bodyElement.classList.add("stop-scrolling");
+      this.setCanvasSize();
+    },
+    endGame() {
+      this.$emit("end-game");
+    },
+    setCanvasSize() {
+      this.canvas.style.width = "100%";
+      this.canvas.style.height = "100%";
+      this.canvas.width = this.canvas.offsetWidth;
+      this.canvas.height = this.canvas.offsetHeight;
     },
     animate() {
       requestAnimationFrame(this.animate);
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.drawPointer();
-      this.drawShip();
+      this.updateShip();
     },
     trackMouse(e) {
       const rect = this.canvas.getBoundingClientRect();
@@ -90,8 +118,39 @@ export default {
         { x2: x, y2: y + radius / 3 }
       );
     },
+    updateShip() {
+      const { x, y } = this.ship;
+      const dx = x - this.mouse.x;
+      const dy = y - this.mouse.y;
+      this.ship.theta = Math.atan2(dy, dx);
+
+      let hyp = calculateDistance(x, y, this.mouse.x, this.mouse.y);
+      if (hyp > 350) {
+        hyp = 300;
+      }
+
+      const displacement = calculateXYDisplacement(this.ship.theta, hyp);
+      this.ship.vx = displacement.dx / 20;
+      this.ship.vy = displacement.dy / 20;
+
+      this.moveShip();
+      this.drawShip();
+    },
+    moveShip() {
+      const x = this.ship.x - this.ship.vx;
+      const y = this.ship.y - this.ship.vy;
+
+      if (x < 0) this.ship.x = 0;
+      else if (x > this.canvas.width) this.ship.x = this.canvas.width;
+      else this.ship.x = x;
+
+      if (y < 0) this.ship.y = 0;
+      else if (y > this.canvas.height + this.ship.height)
+        this.ship.y = this.canvas.height + this.ship.height;
+      else this.ship.y = y;
+    },
     drawShip() {
-      const { x, y, height, width } = this.ship;
+      const { x, y, height, width, theta } = this.ship;
       const x0 = 0;
       const y0 = 0;
       const x1 = height;
@@ -100,10 +159,6 @@ export default {
       const y2 = 0;
       const x3 = height;
       const y3 = width / 2;
-
-      const dx = x - this.mouse.x;
-      const dy = y - this.mouse.y;
-      const theta = Math.atan2(dy, dx);
 
       const v0 = coordinateOfPointAfterRotation(x0, y0, theta);
       const v1 = coordinateOfPointAfterRotation(x1, y1, theta);

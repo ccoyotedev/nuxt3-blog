@@ -1,7 +1,11 @@
+<script setup>
+const gameMode = useGameMode();
+</script>
+
 <template>
-  <div class="layout">
-    <Header />
-    <Sidetray />
+  <div class="layout" :class="{ 'game-mode': gameMode }">
+    <Header class="header" />
+    <Sidetray class="side-tray" />
     <div class="content">
       <NuxtPage />
     </div>
@@ -121,6 +125,16 @@ p {
     grid-template-columns: 14rem 1fr;
   }
 
+  .layout.game-mode {
+    height: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .layout.game-mode .header,
+  .layout.game-mode .side-tray {
+    display: none;
+  }
+
   .content {
     background: repeating-linear-gradient(
       to right,
@@ -129,6 +143,10 @@ p {
       rgba(2, 220, 129, 0.1) calc(8.333% - 0.5px),
       rgba(2, 220, 129, 0.1) 8.333%
     );
+  }
+
+  .stop-scrolling {
+    overflow: hidden;
   }
 }
 </style>

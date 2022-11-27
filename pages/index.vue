@@ -1,5 +1,13 @@
+<script setup>
+const gameMode = useGameMode();
+</script>
+
 <template>
-  <NuxtLayout name="animation">
+  <NuxtLayout
+    name="animation"
+    class="home-page"
+    :class="{ 'game-mode': gameMode }"
+  >
     <span class="section-wrapper">
       <SectionHero />
       <div class="scroll-down-right">
@@ -17,22 +25,26 @@
 </template>
 
 <style scoped>
-  .section-wrapper {
-    position: relative;
-  }
-  .section-wrapper:after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: rgba(2, 220, 129, 0.4);
-  }
+.home-page.game-mode .scroll-down-right {
+  opacity: 0;
+}
 
-  .scroll-down-right {
-    position: absolute;
-    right: 2.4rem;
-    bottom: 2.4rem;
-  }
+.section-wrapper {
+  position: relative;
+}
+.section-wrapper:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(2, 220, 129, 0.4);
+}
+
+.scroll-down-right {
+  position: absolute;
+  right: 2.4rem;
+  bottom: 2.4rem;
+}
 </style>

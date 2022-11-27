@@ -1,4 +1,5 @@
 const PRIMARY_COLOR = "#02dc81";
+const SECONDARY_COLOR = "#fffff";
 
 export function drawLine(ctx, {
   x1,
@@ -44,4 +45,10 @@ export function calculateXYDisplacement(theta, hyp) {
     dx,
     dy
   };
+}
+
+export function calculateDistance(x1, y1, x2, y2) {
+  let dx = Math.abs(x1 - x2);
+  let dy = Math.abs(y1 - y2);
+  return Math.sqrt(dx * dx + dy * dy);
 }
