@@ -6,26 +6,43 @@
 import {
   drawLine,
   drawCircle,
-  coordinateOfPointAfterRotation,
+  calculateDistance,
+  calculateXYDisplacement,
+  isOutOfBounds,
 } from "./helpers/index.js";
+import { drawProjectiles, drawShip } from "./helpers/spaceShooter.js";
 
 export default {
   name: "Canvas",
   data() {
     return {
+      active: true,
       mouse: {
         x: 0,
         y: 0,
       },
       ship: {
+        firerate: 400,
+        reloading: false,
         x: 300,
         y: 300,
         height: 40,
         width: 30,
+        theta: 0,
+        vx: 0,
+        vy: 0,
+        projectiles: [],
       },
     };
   },
   mounted() {
+    window.addEventListener("mousemove", this.trackMouse);
+    window.addEventListener("click", this.handleClick);
+    window.addEventListener("keypress", this.handleKeyPress);
+    document
+      .getElementsByClassName("content")[0]
+      .addEventListener("scroll", this.handleViewportCheck);
+
     this.init();
     setTimeout(() => {
       if (!this.ctx) {
@@ -33,32 +50,68 @@ export default {
       }
     }, 1000);
   },
-  beforeDestroy() {
+  beforeUnmount() {
+    this.active = false;
     window.removeEventListener("mousemove", this.trackMouse);
+    window.removeEventListener("click", this.handleClick);
+    window.removeEventListener("keypress", this.handleKeyPress);
+    document
+      .getElementsByClassName("content")[0]
+      .removeEventListener("scroll", this.handleViewportCheck);
   },
   methods: {
     init() {
       const c = document.getElementById("c");
       if (c) {
-        c.style.width = "100%";
-        c.style.height = "100%";
-        // ...then set the internal size to match
-        c.width = c.offsetWidth;
-        c.height = c.offsetHeight;
-
         const ctx = c.getContext("2d");
-        window.addEventListener("mousemove", this.trackMouse);
         this.canvas = c;
         this.ctx = ctx;
+
+        this.setCanvasSize();
         this.animate();
       }
+    },
+    handleKeyPress(e) {
+      if (e.key === "p") {
+        this.startGame();
+      } else if (e.key === "q") {
+        this.endGame();
+      }
+    },
+    handleViewportCheck() {
+      const scrolled = document.getElementsByClassName("content")[0].scrollTop;
+      const height = window.innerHeight;
+      this.active = scrolled < height;
+    },
+    startGame() {
+      this.$emit("start-game");
+      const bodyElement = document.querySelector("body");
+      bodyElement.classList.add("stop-scrolling");
+    },
+    endGame() {
+      this.$emit("end-game");
+      const bodyElement = document.querySelector("body");
+      bodyElement.classList.remove("stop-scrolling");
+    },
+    setCanvasSize() {
+      this.canvas.style.width = "100%";
+      this.canvas.style.height = "100%";
+      this.canvas.width = this.canvas.offsetWidth;
+      this.canvas.height = this.canvas.offsetHeight;
     },
     animate() {
       requestAnimationFrame(this.animate);
 
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.drawPointer();
-      this.drawShip();
+      if (this.active) {
+        this.setCanvasSize();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawPointer();
+        this.updateShip();
+        this.updateProjectiles();
+        this.clearInactiveProjectiles();
+        drawShip(this.ctx, this.ship);
+        drawProjectiles(this.ctx, this.ship.projectiles);
+      }
     },
     trackMouse(e) {
       const rect = this.canvas.getBoundingClientRect();
@@ -90,46 +143,87 @@ export default {
         { x2: x, y2: y + radius / 3 }
       );
     },
-    drawShip() {
-      const { x, y, height, width } = this.ship;
-      const x0 = 0;
-      const y0 = 0;
-      const x1 = height;
-      const y1 = -width / 2;
-      const x2 = (2 * height) / 3;
-      const y2 = 0;
-      const x3 = height;
-      const y3 = width / 2;
+    handleClick() {
+      console.log(this.ship.reloading);
+      if (!this.ship.reloading) {
+        this.shoot();
+        this.ship.reloading = true;
 
+        setTimeout(() => {
+          this.ship.reloading = false;
+        }, this.ship.firerate);
+      }
+    },
+    shoot() {
+      const x = this.ship.x;
+      const y = this.ship.y;
+      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 8);
+      const vx = dx + this.ship.vx;
+      const vy = dy + this.ship.vy * 2;
+      const projectile = { x, y, vx, vy, active: true };
+      this.ship.projectiles = [...this.ship.projectiles, projectile];
+    },
+    updateProjectiles() {
+      this.ship.projectiles.forEach((_, i) => this.updateProjectile(i));
+    },
+    updateProjectile(i) {
+      const projectile = this.ship.projectiles[i];
+      const x = projectile.x - projectile.vx;
+      const y = projectile.y - projectile.vy;
+      const active = !isOutOfBounds(this.canvas, x, y, 5);
+
+      const updatedProjectile = {
+        ...projectile,
+        x,
+        y,
+        active,
+      };
+      this.ship.projectiles[i] = updatedProjectile;
+    },
+    clearInactiveProjectiles() {
+      this.ship.projectiles = this.ship.projectiles.filter(
+        (projectile) => projectile.active
+      );
+    },
+    updateShip() {
+      const { x, y } = this.ship;
       const dx = x - this.mouse.x;
       const dy = y - this.mouse.y;
-      const theta = Math.atan2(dy, dx);
+      this.ship.theta = Math.atan2(dy, dx);
 
-      const v0 = coordinateOfPointAfterRotation(x0, y0, theta);
-      const v1 = coordinateOfPointAfterRotation(x1, y1, theta);
-      const v2 = coordinateOfPointAfterRotation(x2, y2, theta);
-      const v3 = coordinateOfPointAfterRotation(x3, y3, theta);
+      let hyp = calculateDistance(x, y, this.mouse.x, this.mouse.y);
+      if (hyp > 350) {
+        hyp = 350;
+      }
 
-      drawLine(
-        this.ctx,
-        { x1: x + v0.x, y1: y + v0.y },
-        { x2: x + v1.x, y2: y + v1.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v1.x, y1: y + v1.y },
-        { x2: x + v2.x, y2: y + v2.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v2.x, y1: y + v2.y },
-        { x2: x + v3.x, y2: y + v3.y }
-      );
-      drawLine(
-        this.ctx,
-        { x1: x + v3.x, y1: y + v3.y },
-        { x2: x + v0.x, y2: y + v0.y }
-      );
+      const displacement = calculateXYDisplacement(this.ship.theta, hyp);
+      this.ship.vx = displacement.dx / 20;
+      this.ship.vy = displacement.dy / 20;
+
+      this.moveShip();
+    },
+    isOutOfBounds(x, y, radius) {
+      if (
+        x > this.canvas.width + radius ||
+        x < -radius ||
+        y > this.canvas.height + radius ||
+        y < -radius
+      )
+        return true;
+      return false;
+    },
+    moveShip() {
+      const x = this.ship.x - this.ship.vx;
+      const y = this.ship.y - this.ship.vy;
+
+      if (x < 0) this.ship.x = 0;
+      else if (x > this.canvas.width) this.ship.x = this.canvas.width;
+      else this.ship.x = x;
+
+      if (y < 0) this.ship.y = 0;
+      else if (y > this.canvas.height + this.ship.height)
+        this.ship.y = this.canvas.height + this.ship.height;
+      else this.ship.y = y;
     },
   },
 };

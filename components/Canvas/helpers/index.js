@@ -1,4 +1,5 @@
 const PRIMARY_COLOR = "#02dc81";
+const SECONDARY_COLOR = "#fffff";
 
 export function drawLine(ctx, {
   x1,
@@ -14,7 +15,7 @@ export function drawLine(ctx, {
   ctx.stroke();
 };
 
-export function drawCircle(ctx, x, y, radius) {
+export function drawCircle(ctx, x, y, radius, options) {
   ctx.beginPath();
   ctx.arc(
     x,
@@ -24,6 +25,9 @@ export function drawCircle(ctx, x, y, radius) {
     2 * Math.PI,
     false
   );
+  if (options && options.fill) {
+    ctx.fillStyle = options.fill
+  }
   ctx.strokeStyle = PRIMARY_COLOR;
   ctx.stroke();
 }
@@ -44,4 +48,21 @@ export function calculateXYDisplacement(theta, hyp) {
     dx,
     dy
   };
+}
+
+export function calculateDistance(x1, y1, x2, y2) {
+  let dx = Math.abs(x1 - x2);
+  let dy = Math.abs(y1 - y2);
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+export function isOutOfBounds(canvas, x, y, radius) {
+  if (
+    x > canvas.width + radius ||
+    x < -radius ||
+    y > canvas.height + radius ||
+    y < -radius
+  )
+    return true;
+  return false;
 }

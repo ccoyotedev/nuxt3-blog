@@ -1,12 +1,15 @@
+<script setup>
+const gameMode = useGameMode();
+</script>
+
 <template>
   <NuxtLayout
     name="section"
     class="hero-container"
-    @click="changeMode"
     :class="{ 'game-mode': gameMode }"
   >
     <div class="canvas-container">
-      <Canvas />
+      <Canvas @startGame="gameMode = true" @endGame="gameMode = false" />
     </div>
     <div class="content-container">
       <AnimatedHeading value="<h1>" color="rgba(255,255,255,0.1)" :delay="0" />
@@ -32,21 +35,6 @@
   </NuxtLayout>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      gameMode: false,
-    };
-  },
-  methods: {
-    changeMode() {
-      this.gameMode = !this.gameMode;
-    },
-  },
-};
-</script>
-
 <style>
 .hero-container h1 {
   position: relative;
@@ -62,7 +50,9 @@ export default {
   .hero-container.game-mode .canvas-container {
     z-index: 1;
     opacity: 1;
+    border: 1px solid rgba(2, 220, 129, 1);
   }
+
   .hero-container.game-mode .content-container {
     opacity: 0.1;
   }
