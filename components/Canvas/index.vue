@@ -127,8 +127,9 @@ export default {
     shoot() {
       const x = this.ship.x;
       const y = this.ship.y;
-      const vx = this.ship.vx * 2;
-      const vy = this.ship.vy * 2;
+      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 350);
+      const vx = dx + this.ship.vx;
+      const vy = dy + this.ship.vy * 2;
       const projectile = { x, y, vx, vy };
       this.ship.projectiles = [...this.ship.projectiles, projectile];
     },
@@ -176,7 +177,6 @@ export default {
     },
     drawProjectiles() {
       this.ship.projectiles.forEach((projectile) => {
-        console.log(projectile.x);
         drawCircle(this.ctx, projectile.x, projectile.y, 5, {
           fill: "#02dc81",
         });
