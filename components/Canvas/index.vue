@@ -91,6 +91,7 @@ export default {
       this.drawPointer();
       this.updateShip();
       this.updateProjectiles();
+      this.clearInactiveProjectiles();
       this.drawShip();
       this.drawProjectiles();
     },
@@ -127,10 +128,10 @@ export default {
     shoot() {
       const x = this.ship.x;
       const y = this.ship.y;
-      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 350);
+      const { dx, dy } = calculateXYDisplacement(this.ship.theta, 10);
       const vx = dx + this.ship.vx;
       const vy = dy + this.ship.vy * 2;
-      const projectile = { x, y, vx, vy };
+      const projectile = { x, y, vx, vy, active: true };
       this.ship.projectiles = [...this.ship.projectiles, projectile];
     },
     updateProjectiles() {
@@ -138,12 +139,22 @@ export default {
     },
     updateProjectile(i) {
       const projectile = this.ship.projectiles[i];
+      const x = projectile.x - projectile.vx;
+      const y = projectile.y - projectile.vy;
+      const active = !this.isOutOfBounds(x, y, 5);
+
       const updatedProjectile = {
         ...projectile,
-        x: projectile.x - projectile.vx,
-        y: projectile.y - projectile.vy,
+        x,
+        y,
+        active,
       };
       this.ship.projectiles[i] = updatedProjectile;
+    },
+    clearInactiveProjectiles() {
+      this.ship.projectiles = this.ship.projectiles.filter(
+        (projectile) => projectile.active
+      );
     },
     updateShip() {
       const { x, y } = this.ship;
@@ -161,6 +172,16 @@ export default {
       this.ship.vy = displacement.dy / 20;
 
       this.moveShip();
+    },
+    isOutOfBounds(x, y, radius) {
+      if (
+        x > this.canvas.width + radius ||
+        x < -radius ||
+        y > this.canvas.height + radius ||
+        y < -radius
+      )
+        return true;
+      return false;
     },
     moveShip() {
       const x = this.ship.x - this.ship.vx;
