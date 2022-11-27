@@ -27,6 +27,7 @@ export default {
         theta: 0,
         vx: 0,
         vy: 0,
+        projectiles: [],
       },
     };
   },
@@ -70,10 +71,11 @@ export default {
       this.$emit("start-game");
       const bodyElement = document.querySelector("body");
       bodyElement.classList.add("stop-scrolling");
-      this.setCanvasSize();
     },
     endGame() {
       this.$emit("end-game");
+      const bodyElement = document.querySelector("body");
+      bodyElement.classList.remove("stop-scrolling");
     },
     setCanvasSize() {
       this.canvas.style.width = "100%";
@@ -84,9 +86,13 @@ export default {
     animate() {
       requestAnimationFrame(this.animate);
 
+      this.setCanvasSize();
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.drawPointer();
       this.updateShip();
+      this.updateProjectiles();
+      this.drawShip();
+      this.drawProjectiles();
     },
     trackMouse(e) {
       const rect = this.canvas.getBoundingClientRect();
@@ -118,6 +124,26 @@ export default {
         { x2: x, y2: y + radius / 3 }
       );
     },
+    shoot() {
+      const x = this.ship.x;
+      const y = this.ship.y;
+      const vx = this.ship.vx * 2;
+      const vy = this.ship.vy * 2;
+      const projectile = { x, y, vx, vy };
+      this.ship.projectiles = [...this.ship.projectiles, projectile];
+    },
+    updateProjectiles() {
+      this.ship.projectiles.forEach((_, i) => this.updateProjectile(i));
+    },
+    updateProjectile(i) {
+      const projectile = this.ship.projectiles[i];
+      const updatedProjectile = {
+        ...projectile,
+        x: projectile.x - projectile.vx,
+        y: projectile.y - projectile.vy,
+      };
+      this.ship.projectiles[i] = updatedProjectile;
+    },
     updateShip() {
       const { x, y } = this.ship;
       const dx = x - this.mouse.x;
@@ -126,7 +152,7 @@ export default {
 
       let hyp = calculateDistance(x, y, this.mouse.x, this.mouse.y);
       if (hyp > 350) {
-        hyp = 300;
+        hyp = 350;
       }
 
       const displacement = calculateXYDisplacement(this.ship.theta, hyp);
@@ -134,7 +160,6 @@ export default {
       this.ship.vy = displacement.dy / 20;
 
       this.moveShip();
-      this.drawShip();
     },
     moveShip() {
       const x = this.ship.x - this.ship.vx;
@@ -148,6 +173,14 @@ export default {
       else if (y > this.canvas.height + this.ship.height)
         this.ship.y = this.canvas.height + this.ship.height;
       else this.ship.y = y;
+    },
+    drawProjectiles() {
+      this.ship.projectiles.forEach((projectile) => {
+        console.log(projectile.x);
+        drawCircle(this.ctx, projectile.x, projectile.y, 5, {
+          fill: "#02dc81",
+        });
+      });
     },
     drawShip() {
       const { x, y, height, width, theta } = this.ship;

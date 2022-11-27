@@ -15,7 +15,7 @@ export function drawLine(ctx, {
   ctx.stroke();
 };
 
-export function drawCircle(ctx, x, y, radius) {
+export function drawCircle(ctx, x, y, radius, options) {
   ctx.beginPath();
   ctx.arc(
     x,
@@ -25,6 +25,9 @@ export function drawCircle(ctx, x, y, radius) {
     2 * Math.PI,
     false
   );
+  if (options && options.fill) {
+    ctx.fillStyle = options.fill
+  }
   ctx.strokeStyle = PRIMARY_COLOR;
   ctx.stroke();
 }
